@@ -48,22 +48,58 @@ var spiral = function (N) {
     return spiral;
 };
 
-var dot = d3.svg.symbol().type('circle').size(2),
-    d = 2,
-    x = function (x) { return 200+d*x; },
-    y = function (y) { return 200+d*y; };
+var dot = d3.svg.symbol().type('circle').size(3),
+    x = function (x, d) { return 300+d*x; },
+    y = function (y, d) { return 300+d*y; };
 
 d3.text('primes-to-100k.txt', function (data) {
-    var primes = data.split('\n').slice(0, 4000).map(Number),
-        sequence = spiral(d3.max(primes));
+    var primes = data.split('\n').slice(0, 15).map(Number),
+        sequence = spiral(d3.max(primes)).filter(function (d) {
+            return primes.indexOf(d[2]) > -1;
+        });
+
+    var a = 2;
 
     svg.selectAll('path')
-        .data(sequence.filter(function (d) {
-            return primes.indexOf(d[2]) > -1;
-        }))
+        .data(sequence)
         .enter()
         .append('path')
-        .attr('transform', function (d) { return 'translate('+x(d[0])+', '+y(d[1])+')'; })
+        .attr('transform', function (d) { return 'translate('+x(d[0], a)+', '+y(d[1], a)+')'; })
         .attr('d', dot);
 
+    var scale = 8;
+
+    var regions = d3.nest()
+            .key(function (d) { return Math.floor(d[0]/scale); })
+            .key(function (d) { return Math.floor(d[1]/scale); })
+            .rollup(function (d) { return d.length; })
+            .map(sequence),
+        values = d3.merge(d3.keys(regions).map(function (_x) {
+            return d3.values(regions[_x]);
+        }));
+
+    var median = d3.median(values),
+        shades = (d3.extent(values)[1]-d3.extent(values)[0])/2;
+   
+    d3.keys(regions).forEach(function (_x) {
+        d3.keys(regions[_x]).forEach(function (_y) {
+
+            var color;
+
+            if (regions[_x][_y] > median) {
+                color = d3.rgb('#496c36').brighter(regions[_x][_y]/shades);
+            }else{
+                color = d3.rgb('#e23c22').darker(regions[_x][_y]/shades);
+            }
+            
+            svg.append('rect')
+                .attr({x: x(_x, a*scale),
+                       y: y(_y, a*scale),
+                       width: a*scale,
+                       height: a*scale})
+                .style({fill: color,
+                        'fill-opacity': 0.9});
+        });
+    });
 });
+
