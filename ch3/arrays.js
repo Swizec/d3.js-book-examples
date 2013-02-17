@@ -48,12 +48,14 @@ var spiral = function (N) {
     return spiral;
 };
 
+
 var dot = d3.svg.symbol().type('circle').size(3),
-    x = function (x, d) { return 300+d*x; },
-    y = function (y, d) { return 300+d*y; };
+    x = function (x, d) { return 400+d*x; },
+    y = function (y, d) { return 400+d*y; };
 
 d3.text('primes-to-100k.txt', function (data) {
-    var primes = data.split('\n').slice(0, 15).map(Number),
+
+    var primes = data.split('\n').slice(0, 5000).map(Number),
         sequence = spiral(d3.max(primes)).filter(function (d) {
             return primes.indexOf(d[2]) > -1;
         });
