@@ -48,7 +48,6 @@ var spiral = function (N) {
     return spiral;
 };
 
-
 var dot = d3.svg.symbol().type('circle').size(3),
     x = function (x, d) { return 400+d*x; },
     y = function (y, d) { return 400+d*y; };
@@ -82,7 +81,7 @@ d3.text('primes-to-100k.txt', function (data) {
 
     var median = d3.median(values),
         shades = (d3.extent(values)[1]-d3.extent(values)[0])/2;
-   
+
     d3.keys(regions).forEach(function (_x) {
         d3.keys(regions[_x]).forEach(function (_y) {
 
@@ -100,7 +99,7 @@ d3.text('primes-to-100k.txt', function (data) {
                        width: a*scale,
                        height: a*scale})
                 .style({fill: color,
-                        'fill-opacity': 0.9});
+                       'fill-opacity': 0.9});
         });
     });
 });
