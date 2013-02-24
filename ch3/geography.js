@@ -1,5 +1,5 @@
 
-var width = 1200,
+var width = 1800,
     height = 1200,
     svg = d3.select('#graph')
         .append('svg')
@@ -7,8 +7,8 @@ var width = 1200,
                height: height});
 
 var projection = d3.geo.equirectangular()
-        .center([14, 46])
-        .scale(1400);
+        .center([8, 56])
+        .scale(800);
 
 queue()
     .defer(d3.json, 'data/water.json')
