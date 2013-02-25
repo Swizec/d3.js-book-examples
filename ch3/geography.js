@@ -85,25 +85,6 @@ function draw_airlines(err, _airports, _routes) {
     }),
         R = d3.scale.linear().domain([d3.min(route_N), d3.max(route_N)]).range([2, 15]);
 
-    var route = d3.svg.diagonal()
-            .source(function (route) {
-                var from_airport = airports[route.from];
-                //console.log('source', projection([from_airport.lon, from_airport.lat]));
-                var p = projection([from_airport.lon, from_airport.lat]);
-                return {x: p[0], y: p[1]};
-            })
-            .target(function (route) {
-                var to_airport = airports[route.to];
-                //console.log(route);
-                //console.log('target', projection([to_airport.lon, to_airport.lat]));
-                var p = projection([to_airport.lon, to_airport.lat]);
-                return {x: p[0], y: p[1]};
-            });
-          //  .projection(function (d) {
-                //console.log(typeof d == Array);
-                //return projection(d);
-            //});
-    
    svg.append('g')
         .selectAll('circle')
         .data(d3.keys(airports))
@@ -115,14 +96,4 @@ function draw_airlines(err, _airports, _routes) {
         })
         .attr('r', function (id) { return routes[id] ? R(routes[id].length) : 1; })
         .classed('airport', true);
-
-    svg.append('g')
-        .selectAll('g')
-        .data(d3.merge(d3.values(routes)).filter(function (d) {
-            return Number(d.to) && Number(d.from);
-        }))
-        .enter()
-        .append('path')
-        .attr('d', route)
-        .classed('route', true);
 }
