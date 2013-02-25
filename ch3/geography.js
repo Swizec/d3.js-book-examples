@@ -39,8 +39,8 @@ function draw (err, water, land, cultural) {
     add_to_map(cultural, 'ne_50m_admin_0_boundary_lines_land')
         .classed('boundary', true);
 
-//    add_to_map(cultural, 'ne_10m_urban_areas')
-//        .classed('urban', true);
+    add_to_map(cultural, 'ne_10m_urban_areas')
+        .classed('urban', true);
 
     add_airlines();
 };
