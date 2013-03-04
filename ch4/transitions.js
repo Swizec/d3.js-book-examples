@@ -6,28 +6,31 @@ var width = 1024,
         .attr({width: width,
                height: height});
 
-var eases = ['linear', 'poly(4)', 'quad', 'cubic', 'sin', 'exp', 'circle', 'elastic(1, 2)', 'back(2)', 'bounce'],
+var eases = ['linear', 'poly(4)', 'quad', 'cubic', 'sin', 'exp', 'circle', 'elastic(15, 5)', 'back(0.5)', 'bounce', 'cubic-in', 'cubic-out', 'cubic-in-out', 'cubic-out-in'],
 
     y = d3.scale.ordinal().domain(eases).rangeBands([50, 500]);
 
-svg.selectAll('circle')
-    .data(eases)
-    .enter()
-    .append('circle')
-    .attr({cx: 100,
-           cy: y,
-           r: y.rangeBand()/2-5})
-    .transition()
-    .delay(400)
-    .duration(2000)
-    .attr({cx: 500})
-    .ease(function (d) { return d3.ease(d); });
+eases.forEach(function (ease) {
+    var transition = svg.append('circle')
+            .attr({cx: 130,
+                   cy: y(ease),
+                   r: y.rangeBand()/2-5})
+            .transition()
+            .delay(4000)
+            .duration(1500)
+            .attr({cx: 400});
+    
+    if (ease.indexOf('(') > -1) {
+        var args = ease.match(/[0-9]+/g),
+            type = ease.match(/^[a-z]+/);
 
-//var circle = function () {
-/*    svg.append('circle')
-        .attr({cx: 100,
-               cy: 100,
-               r: 20})
-        .transition()
-        .attr({cx: 600})
-        .ease('exp');*/
+        transition.ease(type, args[0], args[1]);
+    }else{
+        transition.ease(ease);
+    }
+
+    svg.append('text')
+        .text(ease)
+        .attr({x: 10,
+               y: y(ease)+5});
+});
