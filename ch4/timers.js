@@ -1,30 +1,44 @@
 
-var width = 1024,
-    height = 768,
+var width = 600,
+    height = 600,
     svg = d3.select('#graph')
         .append('svg')
         .attr({width: width,
                height: height});
 
-var t_scale = d3.scale.linear().domain([500, 2000]).range([0, Math.PI*2]),
-    x = d3.scale.linear().domain([-2, 2]).range([100, width-100]),
-    y = d3.scale.linear().domain([-2, 2]).range([500, 100]);
-    //ball = svg.append('circle')
-    //    .attr({'r': 2});
+var position = function (t) {
+    var a = 80, b = 1, c = 1, d = 80;
 
-var thing = function (time) {
-    if (time > 2000) {
+    return {x: Math.cos(a*t) - Math.pow(Math.cos(b*t), 3),
+            y: Math.sin(c*t) - Math.pow(Math.sin(d*t), 3)};
+};
+
+var t_scale = d3.scale.linear().domain([500, 25000]).range([0, 2*Math.PI]),
+    x = d3.scale.linear().domain([-2, 2]).range([100, width-100]),
+    y = d3.scale.linear().domain([-2, 2]).range([height-100, 100]),
+    brush = svg.append('circle')
+        .attr({r: 4}),
+    previous = position(0);
+
+var step = function (time) {
+    if (time > t_scale.domain()[1]) {
         return true;
     }
     
-    var t = t_scale(time);
+    var t = t_scale(time),
+        pos = position(t);
 
-    var cx = Math.cos(1*t) - Math.pow(Math.cos(7*t), 3),
-        cy = Math.sin(1*t) - Math.pow(Math.sin(7*t), 3);
+    brush.attr({cx: x(pos.x),
+                cy: y(pos.y)});
+    svg.append('line')
+        .attr({x1: x(previous.x),
+               y1: y(previous.y),
+               x2: x(pos.x),
+               y2: y(pos.y),
+               stroke: 'steelblue',
+               'stroke-width': 1.3});
 
-    svg.append('circle').attr({cx: x(cx),
-                               cy: y(cy),
-                               r: 2});
+    previous = pos;
 };
 
-var timer = d3.timer(thing, 500);
+var timer = d3.timer(step, 500);
