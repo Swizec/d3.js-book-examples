@@ -13,10 +13,11 @@ var position = function (t) {
             y: Math.sin(c*t) - Math.pow(Math.sin(d*t), 3)};
 };
 
-var t_scale = d3.scale.linear().domain([500, 25000]).range([0, 2*Math.PI]),
+var t_scale = d3.scale.linear().domain([500, 30000]).range([0, 2*Math.PI]),
     x = d3.scale.linear().domain([-2, 2]).range([100, width-100]),
-    y = d3.scale.linear().domain([-2, 2]).range([height-100, 100]),
-    brush = svg.append('circle')
+    y = d3.scale.linear().domain([-2, 2]).range([height-100, 100]);
+
+var brush = svg.append('circle')
         .attr({r: 4}),
     previous = position(0);
 
