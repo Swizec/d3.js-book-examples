@@ -15,14 +15,6 @@ var screen_width = 900,
     lines = d3.range(screen_width/6),
     x = d3.scale.ordinal().domain(lines).rangeBands([0, screen_width]);
 
-var drag = d3.behavior.drag()
-        .origin(Object)
-        .on('drag', function () {
-            d3.select(this)
-                .attr('transform', 'translate('+d3.event.x+', 0)')
-                .datum({x: d3.event.x, y: 0});
-        });
-
 svg.append('g')
     .selectAll('line')
     .data(lines)
@@ -35,6 +27,14 @@ svg.append('g')
            y1: 0,
            x2: function (d) { return x(d); },
            y2: height});
+
+var drag = d3.behavior.drag()
+        .origin(Object)
+        .on('drag', function () {
+            d3.select(this)
+                .attr('transform', 'translate('+d3.event.x+', 0)')
+                .datum({x: d3.event.x, y: 0});
+        });
 
 svg.select('g')
     .datum({x: 0, y: 0})
