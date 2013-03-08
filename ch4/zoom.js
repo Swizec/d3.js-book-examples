@@ -106,26 +106,30 @@ function zoomable(airports, R_scale, routes) {
             .translate(projection.translate())
             .scale(projection.scale())
             .on('zoom', function () {
-                projection
-                    .translate(d3.event.translate)
-                    .scale(d3.event.scale);
-                
-                d3.selectAll('path')
-                    .attr('d', d3.geo.path().projection(projection));
-
-                d3.selectAll('circle')
-                    .attr('transform', function (id) {
-                        var airport = airports[id];
-                        return "translate("+projection([airport.lon, airport.lat])+")";
-                    })
-                    .attr('r', function (id) {
-                        if (routes[id]) {
-                            var magnifier = d3.event.scale/1200;
-                            return magnifier*R_scale(routes[id].length);
-                        }else{
-                            return 1;
-                        }
-                    });
+                onzoom(airports, R_scale, routes);
             })
     );
+}
+
+function onzoom(airports, R_scale, routes) {
+    projection
+        .translate(d3.event.translate)
+        .scale(d3.event.scale);
+    
+    d3.selectAll('path')
+        .attr('d', d3.geo.path().projection(projection));
+
+    d3.selectAll('circle')
+        .attr('transform', function (id) {
+            var airport = airports[id];
+            return "translate("+projection([airport.lon, airport.lat])+")";
+        })
+        .attr('r', function (id) {
+            if (routes[id]) {
+                var magnifier = d3.event.scale/1200;
+                return magnifier*R_scale(routes[id].length);
+            }else{
+                return 1;
+            }
+        });
 }
