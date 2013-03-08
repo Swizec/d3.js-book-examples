@@ -7,13 +7,14 @@ var width = 600,
                height: height});
 
 var position = function (t) {
-    var a = 80, b = 1, c = 1, d = 80;
+    //var a = 80, b = 1, c = 1, d = 80;
+    var a = 9, b = 100, c = 200, d = 9;
 
     return {x: Math.cos(a*t) - Math.pow(Math.cos(b*t), 3),
-            y: Math.sin(c*t) - Math.pow(Math.sin(d*t), 3)};
+            y: Math.sin(c*t) - Math.pow(Math.sin(d*t), 4)};
 };
 
-var t_scale = d3.scale.linear().domain([500, 30000]).range([0, 2*Math.PI]),
+var t_scale = d3.scale.linear().domain([500, 60000]).range([0, 2*Math.PI]),
     x = d3.scale.linear().domain([-2, 2]).range([100, width-100]),
     y = d3.scale.linear().domain([-2, 2]).range([height-100, 100]);
 
