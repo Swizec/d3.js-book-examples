@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<title></title>
+<link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.brush .extent {
+    stroke: #fff;
+    fill-opacity: .125;
+    shape-rendering: crispEdges;
+}
+
+circle {
+  -webkit-transition: fill-opacity 125ms ease-in-out;
+}
+
+.selecting circle {
+  fill-opacity: 0.25;
+}
+
+circle.selected {
+  stroke: red;
+}
+</style>
+
+<div id="graph"></div>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="brushes.js"></script>
