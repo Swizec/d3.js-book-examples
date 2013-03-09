@@ -13,10 +13,8 @@ var random = d3.random.normal(.5, .11),
 });
 
 var x = d3.scale.linear()
-        //.domain(d3.extent(data.map(function (d) { return d.x; })))
         .range([50, width-50]),
     y = d3.scale.linear()
-        //.domain(d3.extent(data.map(function (d) { return d.y; })))
         .range([height-50, 50]);
 
 svg.append('g')
