@@ -7,10 +7,14 @@ var width = 1024,
                height: height});
 
 
-d3.json('data/histogram-hours.json', function (data) {
+d3.json('data/karma_matrix.json', function (data) {
 
-    var histogram = d3.layout.histogram();
-
-    // no, this data is a bad example, need properly raw data for this stuff
-
+    var receivers = data.map(function (d) {
+            return d.to;
+        });
+    
+    // very much designed to work with numbers not ordinal things ...
+    var histogram = d3.layout.histogram()(receivers);
+    
+    console.log(histogram);
 });
