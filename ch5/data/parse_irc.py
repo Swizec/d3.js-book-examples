@@ -3,7 +3,7 @@ import json
 import os
 import re
 
-karma = re.compile("\w+\+\+")
+karma = re.compile("\w{2,}\+\+")
 
 def parse(entry):
     return {'time': entry['time'],
