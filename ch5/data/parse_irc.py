@@ -3,8 +3,7 @@ import json
 import os
 import re
 
-karma = re.compile("\w{2,10}\+\+|\+\+\w{2,10}")
-extension = re.compile("\W+$")
+karma = re.compile("\w{2,20}\+\+|\+\+\w{2,10}")
 
 def parse(entry):
     return {'time': entry['time'],
@@ -16,8 +15,8 @@ def normalize(entries):
     nicks = {}
 
     for entry in entries:
-        bare_from = re.sub(extension, '', entry['from'].lower())
-        bare_to = re.sub(extension, '', entry['to'].lower())
+        bare_from = entry['from'].lower()[:4]
+        bare_to = entry['to'].lower()[:4]
 
         if not bare_from in nicks:
             nicks[bare_from] = entry['from']
