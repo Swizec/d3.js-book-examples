@@ -32,7 +32,7 @@ d3.json('data/karma_matrix.json', function (data) {
 
     var x = d3.time.scale()
             .domain(extent)
-            .range([0, width]),
+            .range([50, width-50]),
         color = d3.scale.linear()
             .range(["#aad", "#556"]);
 
@@ -45,6 +45,7 @@ d3.json('data/karma_matrix.json', function (data) {
     });
 
     var layers = d3.layout.stack()
+            .order('inside-out')
             .offset('wiggle')(time_binned);
 
     var y = d3.scale.linear()
@@ -69,6 +70,8 @@ d3.json('data/karma_matrix.json', function (data) {
 
     var xAxis = d3.svg.axis()
             .scale(x)
+            .tickFormat(d3.time.format('%b %Y'))
+            .ticks(d3.time.months, 2)
             .orient('bottom');
 
     svg.append('g')
