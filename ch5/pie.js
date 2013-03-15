@@ -25,11 +25,8 @@ d3.json('data/karma_matrix.json', function (data) {
             .value(function (d) { return nick_id(d.from); })(data);
 
     var max = d3.max(histogram.map(function (d) { return d.length; })),
-        log = d3.scale.linear()
-            .domain([1, max])
-            .range([1, max]),
         pie = d3.layout.pie()
-            .value(function (d) { return log(d.length); })(histogram),
+            .value(function (d) { return d.length; })(histogram),
         arc = d3.svg.arc()
             .outerRadius(150)
             .startAngle(function (d) { return d.startAngle; })
