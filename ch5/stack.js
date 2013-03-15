@@ -39,18 +39,20 @@ d3.json('data/karma_matrix.json', function (data) {
     var per_nick = bin_per_nick(data, function (d) { return d.to; });
 
     var time_binned  = per_nick.map(function (nick_layer) {
-        return d3.layout.histogram()
-            .bins(time_bins)
-            .value(function (d) { return time.parse(d.time); })(nick_layer);
+        return {to: nick_layer[0].to,
+                values: d3.layout.histogram()
+                .bins(time_bins)
+                .value(function (d) { return time.parse(d.time); })(nick_layer)};
     });
 
     var layers = d3.layout.stack()
             .order('inside-out')
-            .offset('wiggle')(time_binned);
+            .offset('wiggle')
+            .values(function (d) { return d.values; })(time_binned);
 
     var y = d3.scale.linear()
             .domain([0, d3.max(layers, function (layer) {
-                return d3.max(layer, function (d) { 
+                return d3.max(layer.values, function (d) { 
                     return d.y0+d.y; 
                 });
             })])
@@ -61,13 +63,38 @@ d3.json('data/karma_matrix.json', function (data) {
             .y0(function(d) { return y(d.y0)+100; })
             .y1(function(d) { return y(d.y0 + d.y)+100; });
 
-    svg.selectAll('path')
-        .data(layers)
-        .enter()
-        .append('path')
-        .attr('d', function (d) { return area(d); })
-        .style('fill', function () { return color(Math.random()); });
-
+    var layer = svg.selectAll('path')
+            .data(layers)
+            .enter()
+            .append('path')
+            .attr('d', function (d) { return area(d.values); })
+            .style('fill', function () { return color(Math.random()); })
+            .on('mouseover', function (d) {
+                var path = d3.select(this);
+                path.style('fill-opacity', 0.5);
+                path.style({stroke: 'red', 
+                            'stroke-width': 1.5});
+                
+                var mouse = d3.mouse(svg.node());
+                
+                svg.append('text')
+                    .text(d.to)
+                    .attr({id: "nicktool",
+                           transform: 'translate('+(mouse[0]+5)+', '+(mouse[1]+10)+')'});
+            })
+            .on('mousemove', function () {
+                var mouse = d3.mouse(svg.node());
+                d3.select('#nicktool')
+                    .attr('transform', 'translate('+(mouse[0]+15)+', '+(mouse[1]+20)+')');
+            })
+            .on('mouseout', function () {
+                var path = d3.select(this);
+                path.style('fill-opacity', 1);
+                path.style({stroke: 'none'});
+                
+                d3.select('#nicktool').remove();
+            });
+    
     var xAxis = d3.svg.axis()
             .scale(x)
             .tickFormat(d3.time.format('%b %Y'))
