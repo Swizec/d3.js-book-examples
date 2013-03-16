@@ -1,6 +1,6 @@
 
-var width = 960,
-    height = 960,
+var width = 500,
+    height = 500,
     svg = d3.select('#graph')
         .append('svg')
         .attr({width: width,
@@ -24,16 +24,27 @@ d3.json('data/karma_matrix.json', function (data) {
     var force = d3.layout.force()
             .nodes(nodes)
             .links(links)
+            .linkDistance(150)
+            //.friction(0.1)
             .size([width, height]);
+
+    force.start();
+
+    var weight = d3.scale.linear()
+            .domain(d3.extent(nodes.map(function (d) { return d.weight; })))
+            .range([5, 30]);
 
     var link = svg.selectAll("line")
             .data(links)
             .enter().append("line");
     
     var node = svg.selectAll("circle")
-        .data(nodes)
-        .enter().append("circle")
-            .attr("r", 5);
+            .data(nodes)
+            .enter()
+            .append("circle")
+            .attr({r: function (d) { return weight(d.weight); },
+                   fill: function (d) { return helpers.color(d.index); }})
+            .call(force.drag);
 
     force.on("tick", function() {
         link.attr("x1", function(d) { return d.source.x; })
@@ -44,6 +55,4 @@ d3.json('data/karma_matrix.json', function (data) {
         node.attr("cx", function(d) { return d.x; })
             .attr("cy", function(d) { return d.y; });
     });
-
-    setTimeout(force.start, 300);
 });
