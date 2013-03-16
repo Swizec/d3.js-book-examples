@@ -10,23 +10,11 @@ d3.json('data/karma_matrix.json', function (data) {
     
     data = data.filter(function (d) { return d.to == 'HairyFotr'; });
 
-    var uniques = [];
-    
-    data.forEach(function (d) {
-        if (uniques.indexOf(d.from) < 0) {
-            uniques.push(d.from);
-        }
-    });
+    var per_nick = helpers.bin_per_nick(data, function (d) { return d.from; });
 
-    var nick_id = d3.scale.ordinal().domain(uniques).range(d3.range(uniques.length));
-
-    var histogram = d3.layout.histogram()
-            .bins(nick_id.range())
-            .value(function (d) { return nick_id(d.from); })(data);
-
-    var max = d3.max(histogram.map(function (d) { return d.length; })),
+    var max = d3.max(per_nick.map(function (d) { return d.length; })),
         pie = d3.layout.pie()
-            .value(function (d) { return d.length; })(histogram),
+            .value(function (d) { return d.length; })(per_nick),
         arc = d3.svg.arc()
             .outerRadius(150)
             .startAngle(function (d) { return d.startAngle; })
@@ -50,7 +38,8 @@ d3.json('data/karma_matrix.json', function (data) {
             return d.startAngle > Math.PI/2 ? 'end' : 'start';
         })
         .attr('transform', function (d) {  
-            var degrees = angle(d);
+            var midAngle = (d.endAngle-d.startAngle)/2,
+                degrees = (midAngle+d.startAngle)/Math.PI*180-90;
 
             var turn = 'rotate('+degrees+') translate(160, 0)';
 
@@ -61,10 +50,3 @@ d3.json('data/karma_matrix.json', function (data) {
             return turn;
         });
 });
-
-function angle(d) {
-    var midAngle = (d.endAngle-d.startAngle)/2,
-        degrees = (midAngle+d.startAngle)/Math.PI*180-90;
-
-    return degrees;
-}

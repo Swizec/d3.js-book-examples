@@ -6,24 +6,6 @@ var width = 1024,
         .attr({width: width,
                height: height});
 
-var bin_per_nick = function (data, nick) {
-    var uniques = [];
-    
-    data.forEach(function (d) {
-        if (uniques.indexOf(nick(d)) < 0) {
-            uniques.push(nick(d));
-        }
-    });
-
-    var nick_id = d3.scale.ordinal().domain(uniques).range(d3.range(uniques.length));
-
-    var histogram = d3.layout.histogram()
-            .bins(nick_id.range())
-            .value(function (d) { return nick_id(nick(d)); })(data);
-
-    return histogram;
-};
-
 d3.json('data/karma_matrix.json', function (data) {
 
     var time = d3.time.format('%Y-%m-%d %H:%M:%S'),
@@ -36,7 +18,7 @@ d3.json('data/karma_matrix.json', function (data) {
         color = d3.scale.linear()
             .range(["#aad", "#556"]);
 
-    var per_nick = bin_per_nick(data, function (d) { return d.to; });
+    var per_nick = helpers.bin_per_nick(data, function (d) { return d.to; });
 
     var time_binned  = per_nick.map(function (nick_layer) {
         return {to: nick_layer[0].to,
