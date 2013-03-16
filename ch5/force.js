@@ -45,7 +45,9 @@ d3.json('data/karma_matrix.json', function (data) {
              .range([0, 1]),
          distance = d3.scale.linear()
              .domain(d3.extent(d3.merge(matrix)))
-             .range([250, 100]);
+             .range([250, 100]),
+         given = d3.scale.linear()
+             .range([2, 35]);
 
     force.charge(function (d) {
         return -weight(d.weight);
@@ -61,16 +63,56 @@ d3.json('data/karma_matrix.json', function (data) {
 
     var link = svg.selectAll("line")
             .data(links)
-            .enter().append("line");
+            .enter()
+            .append("line")
+            .attr('class', function (d) { return 'nick_'+nick_id(d.source.nick); })
+            .classed('link', true);
     
     var node = svg.selectAll("circle")
             .data(nodes)
             .enter()
             .append("circle")
+            .attr('class', function (d) { return 'nick_'+nick_id(d.nick); })
+            .classed('node', true)
             .attr({r: function (d) { return weight(d.weight); },
                    fill: function (d) { return helpers.color(d.index); }})
-            .on('mouseover', function () {
+            .on('mouseover', function (d) {
+                var mouse = d3.mouse(svg.node());
                 
+                svg.append('text')
+                    .text(d.nick)
+                    .attr({id: "nicktool",
+                           transform: 'translate('+(mouse[0]+5)+', '+(mouse[1]+10)+')'});
+     
+                given.domain(d3.extent(matrix[nick_id(d.nick)]));
+
+                uniques.map(function (nick) {
+                    var count = matrix[nick_id(d.nick)][nick_id(nick)];
+
+                    if (nick != d.nick) {
+                        d3.selectAll('circle.nick_'+nick_id(nick))
+                            .classed('unconnected', true)
+                            .transition()
+                            .attr('r', given(count));
+                    }
+                });
+            })
+            .on('mousemove', function () {
+                var mouse = d3.mouse(svg.node());
+                d3.select('#nicktool')
+                    .attr('transform', 'translate('+(mouse[0]+15)+', '+(mouse[1]+20)+')');
+            })
+            .on('mouseout', function (d) {
+                var path = d3.select(this);
+                path.style('fill-opacity', 1);
+                path.style({stroke: 'none'});
+                
+                d3.select('#nicktool').remove();
+
+                d3.selectAll('.unconnected')
+                    .classed('unconnected', false)
+                    .transition()
+                    .attr('r', function (d) { return weight(d.weight); });
             })
             .call(force.drag);
 
