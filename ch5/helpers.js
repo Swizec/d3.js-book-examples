@@ -22,5 +22,12 @@ window.helpers = {
                 .value(function (d) { return nick_id(nick(d)); })(data);
         
         return histogram;
+    },
+
+    tickAngle: function (d) {
+        var midAngle = (d.endAngle-d.startAngle)/2,
+            degrees = (midAngle+d.startAngle)/Math.PI*180-90;
+
+        return degrees;
     }
 };

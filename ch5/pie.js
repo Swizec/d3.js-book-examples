@@ -35,11 +35,10 @@ d3.json('data/karma_matrix.json', function (data) {
     slice.append('text')
         .text(function (d) { return d.data[0].from; })
         .attr('text-anchor', function (d) {
-            return d.startAngle > Math.PI/2 ? 'end' : 'start';
+            return helpers.tickAngle(d) > 90 ? 'end' : 'start';
         })
         .attr('transform', function (d) {  
-            var midAngle = (d.endAngle-d.startAngle)/2,
-                degrees = (midAngle+d.startAngle)/Math.PI*180-90;
+            var degrees = helpers.tickAngle(d);
 
             var turn = 'rotate('+degrees+') translate(160, 0)';
 
