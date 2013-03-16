@@ -12,8 +12,13 @@ d3.json('data/karma_matrix.json', function (data) {
         nick_id = d3.scale.ordinal()
             .domain(uniques)
             .range(d3.range(uniques.length)),
-        color = d3.scale.category20c();
-    
+        color = d3.scale.ordinal()
+            .domain(d3.range(uniques.length))
+            .range(['#EF3B39', '#FFCD05', '#69C9CA', '#666699', '#CC3366', '#0099CC', 
+                    '#CCCB31', '#009966', '#C1272D', '#F79420', '#445CA9', '#999999', 
+                    '#402312', '#272361', '#A67C52', '#016735', '#F1AAAF', '#FBF5A2', 
+                    '#A0E6DA', '#C9A8E2', '#F190AC', '#7BD2EA', '#DBD6B6', '#6FE4D0']);
+
     var matrix = d3.range(uniques.length).map(function () {
         return d3.range(uniques.length).map(function () { return 0; });
     });
@@ -30,6 +35,9 @@ d3.json('data/karma_matrix.json', function (data) {
 
     var chord = d3.layout.chord()
             .padding(.05)
+            .sortGroups(d3.descending)
+            .sortSubgroups(d3.descending)
+            .sortChords(d3.descending)
             .matrix(matrix);
 
     svg.append('g')
@@ -62,6 +70,7 @@ d3.json('data/karma_matrix.json', function (data) {
         });
 
     svg.append('g')
+        .classed('chord', true)
         .selectAll('path')
         .data(chord.chords)
         .enter()
