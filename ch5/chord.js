@@ -27,9 +27,7 @@ d3.json('data/karma_matrix.json', function (data) {
         matrix[nick_id(d.from)][nick_id(d.to)] += 1;
     });
 
-    svg = svg.append('g')
-        .attr('transform', 'translate('+width/2+','+height/2+')');
-
+    
     var innerRadius = Math.min(width, height)*0.3,
         outerRadius = innerRadius*1.1;
 
@@ -39,6 +37,9 @@ d3.json('data/karma_matrix.json', function (data) {
             .sortSubgroups(d3.descending)
             .sortChords(d3.descending)
             .matrix(matrix);
+
+    svg = svg.append('g')
+        .attr('transform', 'translate('+width/2+','+height/2+')');
 
     svg.append('g')
         .selectAll('path')
@@ -76,5 +77,5 @@ d3.json('data/karma_matrix.json', function (data) {
         .enter()
         .append('path')
         .attr('d', d3.svg.chord().radius(innerRadius))
-        .attr('fill', function (d) { return color(d.target.index); });
+        .attr('fill', function (d, i) { return color(d.target.index); });
 });
