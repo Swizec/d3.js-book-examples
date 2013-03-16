@@ -1,6 +1,6 @@
 
-var width = 500,
-    height = 500,
+var width = 800,
+    height = 800,
     svg = d3.select('#graph')
         .append('svg')
         .attr({width: width,
@@ -13,26 +13,51 @@ d3.json('data/karma_matrix.json', function (data) {
             .domain(uniques)
             .range(d3.range(uniques.length));
 
+    var matrix = d3.range(uniques.length).map(function () {
+        return d3.range(uniques.length).map(function () { return 0; });
+    });
+    data.forEach(function (d) {
+        matrix[nick_id(d.from)][nick_id(d.to)] += 1;
+    });
+
     var nodes = uniques.map(function (nick) {
         return {nick: nick};
     });
-    var links = data.map(function (d) { 
+    var links = data.map(function (d) {
         return {source: nick_id(d.from),
-                target: nick_id(d.to)};
+                target: nick_id(d.to),
+                count: matrix[nick_id(d.from)][nick_id(d.to)]};
     });
 
     var force = d3.layout.force()
             .nodes(nodes)
             .links(links)
-            .linkDistance(150)
-            //.friction(0.1)
+            .gravity(0.5)
             .size([width, height]);
 
     force.start();
 
-    var weight = d3.scale.linear()
+     var weight = d3.scale.linear()
             .domain(d3.extent(nodes.map(function (d) { return d.weight; })))
-            .range([5, 30]);
+            .range([5, 30]),
+         strength = d3.scale.linear()
+             .domain(d3.extent(d3.merge(matrix)))
+             .range([0, 1]),
+         distance = d3.scale.linear()
+             .domain(d3.extent(d3.merge(matrix)))
+             .range([250, 100]);
+
+    force.charge(function (d) {
+        return -weight(d.weight);
+    })
+        .linkStrength(function (d) {
+            return strength(d.count);
+        })
+        .linkDistance(function (d) {
+            return distance(d.count);
+        });
+
+    force.start();
 
     var link = svg.selectAll("line")
             .data(links)
@@ -44,6 +69,9 @@ d3.json('data/karma_matrix.json', function (data) {
             .append("circle")
             .attr({r: function (d) { return weight(d.weight); },
                    fill: function (d) { return helpers.color(d.index); }})
+            .on('mouseover', function () {
+                
+            })
             .call(force.drag);
 
     force.on("tick", function() {
