@@ -12,12 +12,6 @@ d3.json('data/karma_matrix.json', function (data) {
         extent = d3.extent(data.map(function (d) { return time.parse(d.time); })),
         time_bins = d3.time.days(extent[0], extent[1], 12);
 
-    var x = d3.time.scale()
-            .domain(extent)
-            .range([50, width-50]),
-        color = d3.scale.linear()
-            .range(["#aad", "#556"]);
-
     var per_nick = helpers.bin_per_nick(data, function (d) { return d.to; });
 
     var time_binned  = per_nick.map(function (nick_layer) {
@@ -32,57 +26,38 @@ d3.json('data/karma_matrix.json', function (data) {
             .offset('wiggle')
             .values(function (d) { return d.values; })(time_binned);
 
-    var y = d3.scale.linear()
+    var margins = {
+        top: 220,
+        right: 50,
+        bottom: 0,
+        left: 50
+    };
+
+    var x = d3.time.scale()
+            .domain(extent)
+            .range([margins.left, width-margins.right]),
+        y = d3.scale.linear()
             .domain([0, d3.max(layers, function (layer) {
                 return d3.max(layer.values, function (d) { 
                     return d.y0+d.y; 
                 });
             })])
-            .range([height-220, 0]);
+            .range([height-margins.top, 0]);
 
     var area = d3.svg.area()
             .x(function(d) { return x(d.x); })
             .y0(function(d) { return y(d.y0)+100; })
             .y1(function(d) { return y(d.y0 + d.y)+100; });
 
-    var layer = svg.selectAll('path')
-            .data(layers)
-            .enter()
-            .append('path')
-            .attr('d', function (d) { return area(d.values); })
-            .style('fill', function (d, i) { return helpers.color(i); })
-            .on('mouseover', function (d) {
-                var path = d3.select(this);
-                path.style('fill-opacity', 0.5);
-                path.style({stroke: 'red', 
-                            'stroke-width': 1.5});
-                
-                var mouse = d3.mouse(svg.node());
-
-                var tool = svg.append('g')
-                        .attr({'id': "nicktool",
-                               transform: 'translate('+(mouse[0]+5)+', '+(mouse[1]+10)+')'});
-                
-                tool.append('rect')
-                    .attr({height: '1.25em',
-                           width: (d.to.length*0.75)+'em',
-                           transform: 'translate(0, -16)'});
-                tool.append('text')
-                    .text(d.to);
-                
-            })
-            .on('mousemove', function () {
-                var mouse = d3.mouse(svg.node());
-                d3.select('#nicktool')
-                    .attr('transform', 'translate('+(mouse[0]+15)+', '+(mouse[1]+20)+')');
-            })
-            .on('mouseout', function () {
-                var path = d3.select(this);
-                path.style('fill-opacity', 1);
-                path.style({stroke: 'none'});
-                
-                d3.select('#nicktool').remove();
-            });
+    svg.selectAll('path')
+        .data(layers)
+        .enter()
+        .append('path')
+        .attr('d', function (d) { return area(d.values); })
+        .style('fill', function (d, i) { return helpers.color(i); })
+        .on('mouseover', mouseover)
+        .on('mousemove', mousemove)
+        .on('mouseout', mouseout);
     
     var xAxis = d3.svg.axis()
             .scale(x)
@@ -96,3 +71,35 @@ d3.json('data/karma_matrix.json', function (data) {
         .call(xAxis);
 
 });
+
+function mouseover(d) {
+    var path = d3.select(this);
+    path.classed('highlighted', true);
+    
+    var mouse = d3.mouse(svg.node());
+
+    var tool = svg.append('g')
+            .attr({'id': "nicktool",
+                   transform: 'translate('+(mouse[0]+5)+', '+(mouse[1]+10)+')'});
+    
+    tool.append('rect')
+        .attr({height: '1.25em',
+               width: (d.to.length*0.75)+'em',
+               transform: 'translate(0, -16)'});
+    tool.append('text')
+        .text(d.to);
+    
+}
+
+function mousemove () {
+    var mouse = d3.mouse(svg.node());
+    d3.select('#nicktool')
+        .attr('transform', 'translate('+(mouse[0]+15)+', '+(mouse[1]+20)+')');
+}
+
+function mouseout () {
+    var path = d3.select(this);
+    path.classed('highlighted', false);
+    
+    d3.select('#nicktool').remove();
+}
