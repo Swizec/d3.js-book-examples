@@ -31,10 +31,10 @@ d3.json('data/karma_matrix.json', function (data) {
             .sortChords(d3.descending)
             .matrix(matrix);
 
-    svg = svg.append('g')
-        .attr('transform', 'translate('+width/2+','+height/2+')');
+    var diagram = svg.append('g')
+            .attr('transform', 'translate('+width/2+','+height/2+')');
 
-    svg.append('g')
+    diagram.append('g')
         .selectAll('path')
         .data(chord.groups)
         .enter()
@@ -42,7 +42,7 @@ d3.json('data/karma_matrix.json', function (data) {
         .attr('d', d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius))
         .attr('fill', function (d) { return helpers.color(d.index); });
    
-    svg.append('g')
+    diagram.append('g')
         .selectAll('text')
         .data(chord.groups)
         .enter()
@@ -63,7 +63,7 @@ d3.json('data/karma_matrix.json', function (data) {
             return turn;
         });
 
-    svg.append('g')
+    diagram.append('g')
         .classed('chord', true)
         .selectAll('path')
         .data(chord.chords)
