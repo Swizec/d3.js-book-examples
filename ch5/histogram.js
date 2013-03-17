@@ -21,7 +21,9 @@ d3.json('data/karma_matrix.json', function (data) {
         }
     });
 
-    var nick_id = d3.scale.ordinal().domain(uniques).range(d3.range(uniques.length));
+    var nick_id = d3.scale.ordinal()
+            .domain(uniques)
+            .range(d3.range(uniques.length));
 
     var histogram = d3.layout.histogram()
             .bins(nick_id.range())

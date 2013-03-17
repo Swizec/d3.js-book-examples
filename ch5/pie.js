@@ -12,8 +12,7 @@ d3.json('data/karma_matrix.json', function (data) {
 
     var per_nick = helpers.bin_per_nick(data, function (d) { return d.from; });
 
-    var max = d3.max(per_nick.map(function (d) { return d.length; })),
-        pie = d3.layout.pie()
+    var pie = d3.layout.pie()
             .value(function (d) { return d.length; })(per_nick),
         arc = d3.svg.arc()
             .outerRadius(150)

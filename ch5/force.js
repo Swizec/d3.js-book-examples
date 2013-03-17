@@ -1,6 +1,6 @@
 
-var width = 800,
-    height = 800,
+var width = 1000,
+    height = 1000,
     svg = d3.select('#graph')
         .append('svg')
         .attr({width: width,
@@ -45,16 +45,16 @@ d3.json('data/karma_matrix.json', function (data) {
              .range([0, 1]),
          distance = d3.scale.linear()
              .domain(d3.extent(d3.merge(matrix)))
-             .range([250, 100]),
+             .range([300, 100]),
          given = d3.scale.linear()
              .range([2, 35]);
 
-    force.charge(function (d) {
-        return -weight(d.weight);
-    })
-        .linkStrength(function (d) {
-            return strength(d.count);
-        })
+    force//.charge(function (d) {
+        //return -weight(d.weight);
+   // })
+      //  .linkStrength(function (d) {
+       //     return strength(d.count);
+       // })
         .linkDistance(function (d) {
             return distance(d.count);
         });
