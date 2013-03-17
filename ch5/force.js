@@ -49,13 +49,7 @@ d3.json('data/karma_matrix.json', function (data) {
          given = d3.scale.linear()
              .range([2, 35]);
 
-    force//.charge(function (d) {
-        //return -weight(d.weight);
-   // })
-      //  .linkStrength(function (d) {
-       //     return strength(d.count);
-       // })
-        .linkDistance(function (d) {
+    force.linkDistance(function (d) {
             return distance(d.count);
         });
 
@@ -77,42 +71,12 @@ d3.json('data/karma_matrix.json', function (data) {
             .attr({r: function (d) { return weight(d.weight); },
                    fill: function (d) { return helpers.color(d.index); }})
             .on('mouseover', function (d) {
-                var mouse = d3.mouse(svg.node());
-                
-                svg.append('text')
-                    .text(d.nick)
-                    .attr({id: "nicktool",
-                           transform: 'translate('+(mouse[0]+5)+', '+(mouse[1]+10)+')'});
-     
-                given.domain(d3.extent(matrix[nick_id(d.nick)]));
-
-                uniques.map(function (nick) {
-                    var count = matrix[nick_id(d.nick)][nick_id(nick)];
-
-                    if (nick != d.nick) {
-                        d3.selectAll('circle.nick_'+nick_id(nick))
-                            .classed('unconnected', true)
-                            .transition()
-                            .attr('r', given(count));
-                    }
-                });
+                mouseover(d);
+                highlight(d, uniques, given, matrix, nick_id);
             })
-            .on('mousemove', function () {
-                var mouse = d3.mouse(svg.node());
-                d3.select('#nicktool')
-                    .attr('transform', 'translate('+(mouse[0]+15)+', '+(mouse[1]+20)+')');
-            })
+            .on('mousemove', mousemove)
             .on('mouseout', function (d) {
-                var path = d3.select(this);
-                path.style('fill-opacity', 1);
-                path.style({stroke: 'none'});
-                
-                d3.select('#nicktool').remove();
-
-                d3.selectAll('.unconnected')
-                    .classed('unconnected', false)
-                    .transition()
-                    .attr('r', function (d) { return weight(d.weight); });
+                mouseout(d, weight);
             })
             .call(force.drag);
 
@@ -126,3 +90,42 @@ d3.json('data/karma_matrix.json', function (data) {
             .attr("cy", function(d) { return d.y; });
     });
 });
+
+function mouseover (d) {
+    var mouse = d3.mouse(svg.node());
+    
+    svg.append('text')
+        .text(d.nick)
+        .attr({id: "nicktool",
+               transform: 'translate('+(mouse[0]+5)+', '+(mouse[1]+10)+')'});
+}
+
+function highlight (d, uniques, given, matrix, nick_id) {
+    given.domain(d3.extent(matrix[nick_id(d.nick)]));
+
+    uniques.map(function (nick) {
+        var count = matrix[nick_id(d.nick)][nick_id(nick)];
+
+        if (nick != d.nick) {
+            d3.selectAll('circle.nick_'+nick_id(nick))
+                .classed('unconnected', true)
+                .transition()
+                .attr('r', given(count));
+        }
+    });
+}
+
+ function mousemove () {
+     var mouse = d3.mouse(svg.node());
+     d3.select('#nicktool')
+         .attr('transform', 'translate('+(mouse[0]+15)+', '+(mouse[1]+20)+')');
+ }
+
+function mouseout (d, weight) {
+    d3.select('#nicktool').remove();
+
+    d3.selectAll('.unconnected')
+        .classed('unconnected', false)
+        .transition()
+        .attr('r', function (d) { return weight(d.weight); });
+}

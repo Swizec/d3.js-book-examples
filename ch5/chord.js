@@ -20,7 +20,7 @@ d3.json('data/karma_matrix.json', function (data) {
     data.forEach(function (d) {
         matrix[nick_id(d.from)][nick_id(d.to)] += 1;
     });
-    
+
     var innerRadius = Math.min(width, height)*0.3,
         outerRadius = innerRadius*1.1;
 
