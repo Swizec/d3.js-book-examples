@@ -50,7 +50,7 @@ d3.json('data/karma_matrix.json', function (data) {
             .enter()
             .append('path')
             .attr('d', function (d) { return area(d.values); })
-            .style('fill', function () { return color(Math.random()); })
+            .style('fill', function (d, i) { return helpers.color(i); })
             .on('mouseover', function (d) {
                 var path = d3.select(this);
                 path.style('fill-opacity', 0.5);
@@ -58,11 +58,18 @@ d3.json('data/karma_matrix.json', function (data) {
                             'stroke-width': 1.5});
                 
                 var mouse = d3.mouse(svg.node());
+
+                var tool = svg.append('g')
+                        .attr({'id': "nicktool",
+                               transform: 'translate('+(mouse[0]+5)+', '+(mouse[1]+10)+')'});
                 
-                svg.append('text')
-                    .text(d.to)
-                    .attr({id: "nicktool",
-                           transform: 'translate('+(mouse[0]+5)+', '+(mouse[1]+10)+')'});
+                tool.append('rect')
+                    .attr({height: '1.25em',
+                           width: (d.to.length*0.75)+'em',
+                           transform: 'translate(0, -16)'});
+                tool.append('text')
+                    .text(d.to);
+                
             })
             .on('mousemove', function () {
                 var mouse = d3.mouse(svg.node());
