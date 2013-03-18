@@ -37,18 +37,15 @@ d3.json('data/karma_matrix.json', function (data) {
 
     force.start();
 
-     var weight = d3.scale.linear()
+    var weight = d3.scale.linear()
             .domain(d3.extent(nodes.map(function (d) { return d.weight; })))
             .range([5, 30]),
-         strength = d3.scale.linear()
-             .domain(d3.extent(d3.merge(matrix)))
-             .range([0, 1]),
-         distance = d3.scale.linear()
-             .domain(d3.extent(d3.merge(matrix)))
-             .range([300, 100]),
-         given = d3.scale.linear()
-             .range([2, 35]);
-
+        distance = d3.scale.linear()
+            .domain(d3.extent(d3.merge(matrix)))
+            .range([300, 100]),
+        given = d3.scale.linear()
+            .range([2, 35]);
+    
     force.linkDistance(function (d) {
             return distance(d.count);
         });
@@ -108,24 +105,22 @@ function highlight (d, uniques, given, matrix, nick_id) {
 
         if (nick != d.nick) {
             d3.selectAll('circle.nick_'+nick_id(nick))
-                .classed('unconnected', true)
                 .transition()
                 .attr('r', given(count));
         }
     });
 }
 
- function mousemove () {
-     var mouse = d3.mouse(svg.node());
-     d3.select('#nicktool')
-         .attr('transform', 'translate('+(mouse[0]+15)+', '+(mouse[1]+20)+')');
+function mousemove () {
+    var mouse = d3.mouse(svg.node());
+    d3.select('#nicktool')
+        .attr('transform', 'translate('+(mouse[0]+15)+', '+(mouse[1]+20)+')');
  }
 
 function mouseout (d, weight) {
     d3.select('#nicktool').remove();
 
-    d3.selectAll('.unconnected')
-        .classed('unconnected', false)
+    d3.selectAll('.node')
         .transition()
         .attr('r', function (d) { return weight(d.weight); });
 }
