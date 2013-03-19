@@ -61,9 +61,9 @@ window.helpers = {
     tooltip: function (text) {
 
         return function (selection) { 
-            selection.on('mouseover', mouseover)
-                .on('mousemove', mousemove)
-                .on('mouseout', mouseout);
+            selection.on('mouseover.tooltip', mouseover)
+                .on('mousemove.tooltip', mousemove)
+                .on('mouseout.tooltip', mouseout);
 
             function mouseover(d) {
                 var path = d3.select(this);

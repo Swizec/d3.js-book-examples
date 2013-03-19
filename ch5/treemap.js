@@ -49,8 +49,9 @@ d3.json('data/karma_matrix.json', function (data) {
                height: function (d) { return d.dy; },
                fill: function (d) { return helpers.color(d.nick); }});
 
-    node.filter(function (d) { return d.depth > 1; })
-        .append('text')
+    var leaves = node.filter(function (d) { return d.depth > 1; });
+
+    leaves.append('text')
         .text(function (d) { return d.nick; })
         .attr('text-anchor', 'middle')
         .attr('transform', function (d) { 
@@ -66,6 +67,26 @@ d3.json('data/karma_matrix.json', function (data) {
             return transform;
         });
  
-    node.filter(function (d) { return d.depth > 1; })
-        .call(helpers.tooltip(function (d) { return d.parent.nick; }));
+    leaves.call(helpers.tooltip(function (d) { return d.parent.nick; }));
+
+    leaves.on('mouseover', function (d) {
+        var belongs_to = d.parent.nick;
+
+        svg.selectAll('.node')
+            .transition()
+            .style('opacity', function (d) {
+                if (d.depth > 1 && d.parent.nick != belongs_to) {
+                    return 0.3;
+                }
+                if (d.depth == 1 && d.nick != belongs_to) {
+                    return 0.3;
+                }
+                return 1;
+            });
+    })
+        .on('mouseout', function () {
+            d3.selectAll('.node')
+                .transition()
+                .style('opacity', 1);
+        });
 });
