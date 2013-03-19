@@ -74,14 +74,20 @@ window.helpers = {
                 var tool = svg.append('g')
                         .attr({'id': "nicktool",
                                transform: 'translate('+(mouse[0]+5)+', '+(mouse[1]+10)+')'});
-                
+
+                var textNode = tool.append('text')
+                        .text(text(d)).node();
+               
                 tool.append('rect')
-                    .attr({height: '1.25em',
-                           width: (text(d).length*0.75)+'em',
+                    .attr({height: textNode.getBBox().height,
+                           width: textNode.getBBox().width,
                            transform: 'translate(0, -16)'});
+                
+                tool.select('text')
+                    .remove();
+
                 tool.append('text')
                     .text(text(d));
-                
             }
 
             function mousemove () {
