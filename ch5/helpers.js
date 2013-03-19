@@ -103,5 +103,34 @@ window.helpers = {
                 d3.select('#nicktool').remove();
             }
         };
+    },
+
+    make_tree: function (data, filter1, filter2, nick1, nick2) {
+        var tree = {nick: 'karma',
+                    children: []};
+        var uniques = helpers.uniques(data, function (d) { return d.from; });
+
+        tree.children = uniques.map(
+            function (nick) {
+                var my_karma = data.filter(function (d) { return filter1(d, nick); }).length,
+                    given_to = helpers.bin_per_nick(
+                        data.filter(function (d) { return filter2(d, nick); }),
+                        nick1
+                    );
+                
+                return {nick: nick,
+                        count: my_karma,
+                        children: given_to.map(function (d) {
+                            return {nick: nick2(d),
+                                    count: d.length,
+                                    children: []};
+                        })};
+            });
+
+        return tree;
+    },
+
+    fixate_colors: function (data) {
+        helpers.uniques(data, function (d) { return d.from; }).forEach(function (nick) { helpers.color(nick); });
     }
 };

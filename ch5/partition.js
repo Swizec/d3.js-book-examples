@@ -8,24 +8,12 @@ var width = 1024,
 
 d3.json('data/karma_matrix.json', function (data) {
     
-    var tree = {nick: 'karma',
-                children: []};
-    var uniques = helpers.uniques(data, function (d) { return d.from; });
-
-    tree.children = uniques.map(function (nick) {
-        return {nick: nick,
-                count: data.filter(function (d) { return d.to == nick; }).length,
-                children: helpers.bin_per_nick(
-                    data.filter(function (d) { return d.to == nick; }),
-                    function (d) { return d.from; }
-                ).map(function (d) {
-                        return {nick: d[0].from,
-                                count: d.length,
-                                children: []};
-                    })};
-    });
-
-    uniques.forEach(function (nick) { helpers.color(nick); });
+    var tree = helpers.make_tree(data,
+                                 function (d, nick) { return d.to == nick; },
+                                 function (d, nick) { return d.to == nick; },
+                                 function (d) { return d.from; },
+                                 function (d) { return d[0].from; });
+    helpers.fixate_colors(data);
 
     var partition = d3.layout.partition()
             .value(function (d) { return d.count; })
@@ -34,16 +22,11 @@ d3.json('data/karma_matrix.json', function (data) {
             })
             .size([2*Math.PI, 300]);
 
-    var nodes = partition.nodes(tree),
-        links = partition.links(nodes);
-
-    var radius = d3.scale.linear()
-            .domain([100, d3.max(nodes, function (d) { return d.y+d.dy; })])
-            .range([100, 300]);
+    var nodes = partition.nodes(tree);
 
     var arc = d3.svg.arc()
-            .innerRadius(function (d) { return radius(d.y); })
-            .outerRadius(function (d) { return d.depth ? radius(d.y+d.dy/d.depth) : 0; });
+            .innerRadius(function (d) { return d.y; })
+            .outerRadius(function (d) { return d.depth ? d.y+d.dy/d.depth : 0; });
 
     nodes = nodes.map(function (d) {
         d.startAngle = d.x;

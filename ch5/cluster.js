@@ -8,23 +8,13 @@ var width = 1024,
 
 d3.json('data/karma_matrix.json', function (data) {
     
-    var tree = {nick: 'karma',
-                children: []};
-    var uniques = helpers.uniques(data, function (d) { return d.from; });
+    var tree = helpers.make_tree(data,
+                                 function (d, nick) { return d.to == nick; },
+                                 function (d, nick) { return d.from == nick; },
+                                 function (d) { return d.to; },
+                                 function (d) { return d[0].to; });
 
-    tree.children = uniques.map(function (nick) {
-        return {nick: nick,
-                count: data.filter(function (d) { return d.to == nick; }).length,
-                children: helpers.bin_per_nick(
-                    data.filter(function (d) { return d.from == nick; }),
-                    function (d) { return d.to; }).map(function (d) {
-                        return {nick: d[0].to,
-                                count: d.length,
-                                children: []};
-                    })};
-    });
-
-    uniques.forEach(function (nick) { helpers.color(nick); });
+    helpers.fixate_colors(data);
     
     var diagonal = d3.svg.diagonal()
             .projection(function (d) { return [d.y, d.x]; });

@@ -12,13 +12,17 @@ d3.json('data/karma_matrix.json', function (data) {
                 children: []};
     var uniques = helpers.uniques(data, function (d) { return d.from; });
 
-    tree.children = uniques.map(function (nick) {
-        return {nick: nick,
-                count: data.filter(function (d) { return d.to == nick; }).length,
-                children: helpers.bin_per_nick(
+    tree.children = uniques.map(
+        function (nick) {
+            var my_karma = data.filter(function (d) { return d.to == nick; }).length,
+                given_to = helpers.bin_per_nick(
                     data.filter(function (d) { return d.from == nick; }),
                     function (d) { return d.to; }
-                ).map(function (d) {
+                );
+
+            return {nick: nick,
+                    count: my_karma,
+                    children: given_to.map(function (d) {
                         return {nick: d[0].to,
                                 count: d.length,
                                 children: []};
@@ -59,5 +63,6 @@ d3.json('data/karma_matrix.json', function (data) {
         .attr("dy", ".31em")
         .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
         .attr("transform", function(d) { return d.x < 180 ? "translate(8)" : "rotate(180)translate(-8)"; })
-        .text(function(d) { return d.nick; });
+        .text(function(d) { return d.nick; })
+        .style('font-size', function (d) { return d.depth > 1 ? '0.8em' : '1.1em'; });
 });
