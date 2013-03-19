@@ -34,34 +34,18 @@ d3.json('data/karma_matrix.json', function (data) {
     var diagram = svg.append('g')
             .attr('transform', 'translate('+width/2+','+height/2+')');
 
-    diagram.append('g')
-        .selectAll('path')
-        .data(chord.groups)
-        .enter()
-        .append('path')
+
+    var group = diagram.selectAll('.group')
+            .data(chord.groups)
+            .enter()
+            .append('g');
+
+    group.append('path')
         .attr('d', d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius))
         .attr('fill', function (d) { return helpers.color(d.index); });
-   
-    diagram.append('g')
-        .selectAll('text')
-        .data(chord.groups)
-        .enter()
-        .append('text')
-        .text(function (d) { return uniques[d.index]; })
-        .attr('text-anchor', function (d) {
-            return helpers.tickAngle(d) > 100 ? 'end' : 'start';
-        })
-        .attr('transform', function (d) {
-            var degrees = helpers.tickAngle(d);
 
-            var turn = 'rotate('+degrees+') translate('+(outerRadius+10)+', 0)';
-
-            if (degrees > 100) {
-                turn += 'rotate(180)';
-            }
-
-            return turn;
-        });
+    group.call(helpers.arc_labels(function (d) { return uniques[d.index]; },
+                                  function () { return outerRadius+10; }));
 
     diagram.append('g')
         .classed('chord', true)
