@@ -65,8 +65,9 @@ d3.json('data/karma_matrix.json', function (data) {
         .attr({d: arc,
                fill: function (d) { return d.depth ? helpers.color(d.nick) : 'white'; }});
     
-    helpers.arc_labels(node.filter(function (d) { return d.depth > 1; }),
-                       function (d) { return d.nick; },
-                       arc.outerRadius());
+    node.filter(function (d) { return d.depth > 1 && d.count > 10; })
+        .call(helpers.arc_labels(function (d) { return d.nick; },
+                                 arc.outerRadius()));
 
+    node.call(helpers.tooltip(function (d) { return d.nick; }));
 });
