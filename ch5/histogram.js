@@ -13,13 +13,7 @@ var margins = {top: 10,
 
 d3.json('data/karma_matrix.json', function (data) {
 
-    var uniques = [];
-    
-    data.forEach(function (d) {
-        if (uniques.indexOf(d.to) < 0) {
-            uniques.push(d.to);
-        }
-    });
+    var uniques = helpers.uniques(data, function (d) { return d.to; });
 
     var nick_id = d3.scale.ordinal()
             .domain(uniques)
