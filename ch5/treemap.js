@@ -32,8 +32,7 @@ d3.json('data/karma_matrix.json', function (data) {
             .attr('transform', function (d) { return 'translate('+d.x+','+d.y+')'; });
 
     node.append('rect')
-        .attr({
-               width: function (d) { return d.dx; },
+        .attr({width: function (d) { return d.dx; },
                height: function (d) { return d.dy; },
                fill: function (d) { return helpers.color(d.nick); }});
 
