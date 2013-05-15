@@ -13,11 +13,7 @@ var margins = {top: 10,
 
 d3.json('data/karma_matrix.json', function (data) {
 
-    var uniques = helpers.uniques(data, function (d) { return d.to; });
-
-    var nick_id = d3.scale.ordinal()
-            .domain(uniques)
-            .range(d3.range(uniques.length));
+    var nick_id = helpers.nick_id(data, function (d) { return d.to; });
 
     var histogram = d3.layout.histogram()
             .bins(nick_id.range())

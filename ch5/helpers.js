@@ -10,12 +10,18 @@ window.helpers = {
         });
 
         return uniques;
-    }, 
+    },
+
+    nick_id: function (data, nick) {
+        var uniques = helpers.uniques(data, nick);
+
+        return d3.scale.ordinal()
+            .domain(uniques)
+            .range(d3.range(uniques.length));
+    },
 
     bin_per_nick: function (data, nick) {
-        var uniques = helpers.uniques(data, nick);
-        
-        var nick_id = d3.scale.ordinal().domain(uniques).range(d3.range(uniques.length));
+        var nick_id = helpers.nick_id(data, nick);
         
         var histogram = d3.layout.histogram()
                 .bins(nick_id.range())
