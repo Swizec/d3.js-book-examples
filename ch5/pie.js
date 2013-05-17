@@ -32,20 +32,6 @@ d3.json('data/karma_matrix.json', function (data) {
                fill: function (d) { return helpers.color(d.data[0].from); }
               });
 
-    slice.append('text')
-        .text(function (d) { return d.data[0].from; })
-        .attr('text-anchor', function (d) {
-            return helpers.tickAngle(d) > 90 ? 'end' : 'start';
-        })
-        .attr('transform', function (d) {
-            var degrees = helpers.tickAngle(d);
-
-            var turn = 'rotate('+degrees+') translate(160, 0)';
-
-            if (degrees > 90) {
-                turn += 'rotate(180)';
-            }
-
-            return turn;
-        });
+    slice.call(helpers.arc_labels(function (d) { return d.data[0].from; },
+                                  arc.outerRadius()));
 });
