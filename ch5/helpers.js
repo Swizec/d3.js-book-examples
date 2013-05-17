@@ -2,7 +2,7 @@
 window.helpers = {
     uniques: function (data, nick) {
         var uniques = [];
-        
+
         data.forEach(function (d) {
             if (uniques.indexOf(nick(d)) < 0) {
                 uniques.push(nick(d));
@@ -22,11 +22,11 @@ window.helpers = {
 
     bin_per_nick: function (data, nick) {
         var nick_id = helpers.nick_id(data, nick);
-        
+
         var histogram = d3.layout.histogram()
                 .bins(nick_id.range())
                 .value(function (d) { return nick_id(nick(d)); })(data);
-        
+
         return histogram;
     },
 
@@ -38,9 +38,9 @@ window.helpers = {
     },
 
     color:  d3.scale.ordinal()
-        .range(['#EF3B39', '#FFCD05', '#69C9CA', '#666699', '#CC3366', '#0099CC', 
-                '#CCCB31', '#009966', '#C1272D', '#F79420', '#445CA9', '#999999', 
-                '#402312', '#272361', '#A67C52', '#016735', '#F1AAAF', '#FBF5A2', 
+        .range(['#EF3B39', '#FFCD05', '#69C9CA', '#666699', '#CC3366', '#0099CC',
+                '#CCCB31', '#009966', '#C1272D', '#F79420', '#445CA9', '#999999',
+                '#402312', '#272361', '#A67C52', '#016735', '#F1AAAF', '#FBF5A2',
                 '#A0E6DA', '#C9A8E2', '#F190AC', '#7BD2EA', '#DBD6B6', '#6FE4D0']),
 
     arc_labels: function (text, radius) {
@@ -52,13 +52,13 @@ window.helpers = {
                 })
                 .attr('transform', function (d) {
                     var degrees = helpers.tickAngle(d);
-                    
+
                     var turn = 'rotate('+degrees+') translate('+(radius(d)+10)+', 0)';
-                    
+
                     if (degrees > 100) {
                         turn += 'rotate(180)';
                     }
-                    
+
                     return turn;
                 });
         };
@@ -66,7 +66,7 @@ window.helpers = {
 
     tooltip: function (text) {
 
-        return function (selection) { 
+        return function (selection) {
             selection.on('mouseover.tooltip', mouseover)
                 .on('mousemove.tooltip', mousemove)
                 .on('mouseout.tooltip', mouseout);
@@ -74,7 +74,7 @@ window.helpers = {
             function mouseover(d) {
                 var path = d3.select(this);
                 path.classed('highlighted', true);
-                
+
                 var mouse = d3.mouse(svg.node());
 
                 var tool = svg.append('g')
@@ -83,12 +83,12 @@ window.helpers = {
 
                 var textNode = tool.append('text')
                         .text(text(d)).node();
-               
+
                 tool.append('rect')
                     .attr({height: textNode.getBBox().height,
                            width: textNode.getBBox().width,
                            transform: 'translate(0, -16)'});
-                
+
                 tool.select('text')
                     .remove();
 
@@ -105,7 +105,7 @@ window.helpers = {
             function mouseout () {
                 var path = d3.select(this);
                 path.classed('highlighted', false);
-                
+
                 d3.select('#nicktool').remove();
             }
         };
@@ -123,7 +123,7 @@ window.helpers = {
                         data.filter(function (d) { return filter2(d, nick); }),
                         nick1
                     );
-                
+
                 return {nick: nick,
                         count: my_karma,
                         children: given_to.map(function (d) {
@@ -137,6 +137,6 @@ window.helpers = {
     },
 
     fixate_colors: function (data) {
-        helpers.uniques(data, function (d) { return d.from; }).forEach(function (nick) { helpers.color(nick); });
+        helpers.color.domain(helpers.uniques(data, function (d) { return d.from; }));
     }
 };

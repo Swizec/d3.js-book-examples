@@ -7,7 +7,7 @@ var width = 1024,
                height: height});
 
 d3.json('data/karma_matrix.json', function (data) {
-    
+
     var tree = helpers.make_tree(data,
                                  function (d, nick) { return d.to == nick; },
                                  function (d, nick) { return d.from == nick; },
@@ -15,7 +15,7 @@ d3.json('data/karma_matrix.json', function (data) {
                                  function (d) { return d[0].to; });
 
     helpers.fixate_colors(data);
-    
+
     var diagonal = d3.svg.diagonal()
             .projection(function (d) { return [d.y, d.x]; });
 

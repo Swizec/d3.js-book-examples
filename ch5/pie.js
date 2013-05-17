@@ -7,18 +7,19 @@ var width = 1024,
                height: height});
 
 d3.json('data/karma_matrix.json', function (data) {
-    
-    data = data.filter(function (d) { return d.to == 'HairyFotr'; });
 
-    var per_nick = helpers.bin_per_nick(data, function (d) { return d.from; });
+    var filtered = data.filter(function (d) { return d.to == 'HairyFotr'; });
+
+    var per_nick = helpers.bin_per_nick(filtered, function (d) { return d.from; });
 
     var pie = d3.layout.pie()
             .value(function (d) { return d.length; })(per_nick),
         arc = d3.svg.arc()
             .outerRadius(150)
             .startAngle(function (d) { return d.startAngle; })
-            .endAngle(function (d) { return d.endAngle; }),
-        colors = d3.scale.category20b();
+            .endAngle(function (d) { return d.endAngle; });
+
+    helpers.fixate_colors(data);
 
     var slice = svg.selectAll('.slice')
             .data(pie)
@@ -28,7 +29,7 @@ d3.json('data/karma_matrix.json', function (data) {
 
     slice.append('path')
         .attr({d: arc,
-               fill: function (d) { return colors(d.data[0].from); }
+               fill: function (d) { return helpers.color(d.data[0].from); }
               });
 
     slice.append('text')
@@ -36,7 +37,7 @@ d3.json('data/karma_matrix.json', function (data) {
         .attr('text-anchor', function (d) {
             return helpers.tickAngle(d) > 90 ? 'end' : 'start';
         })
-        .attr('transform', function (d) {  
+        .attr('transform', function (d) {
             var degrees = helpers.tickAngle(d);
 
             var turn = 'rotate('+degrees+') translate(160, 0)';
