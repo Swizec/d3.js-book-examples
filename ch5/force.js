@@ -8,7 +8,8 @@ var width = 1000,
 
 d3.json('data/karma_matrix.json', function (data) {
 
-    var nick_id = helpers.nick_id(data, function (d) { return d.from; });
+    var nick_id = helpers.nick_id(data, function (d) { return d.from; }),
+        uniques = nick_id.domain();
 
     var matrix = d3.range(uniques.length).map(function () {
         return d3.range(uniques.length).map(function () { return 0; });
@@ -65,14 +66,14 @@ d3.json('data/karma_matrix.json', function (data) {
             .attr({r: function (d) { return weight(d.weight); },
                    fill: function (d) { return helpers.color(d.index); }})
             .on('mouseover', function (d) {
-                mouseover(d);
                 highlight(d, uniques, given, matrix, nick_id);
             })
-            .on('mousemove', mousemove)
             .on('mouseout', function (d) {
-                mouseout(d, weight);
-            })
-            .call(force.drag);
+                dehighlight(d, weight);
+            });
+
+    node.call(helpers.tooltip(function (d) { return d.nick; }));
+    node.call(force.drag);
 
     force.on("tick", function() {
         link.attr("x1", function(d) { return d.source.x; })
@@ -84,15 +85,6 @@ d3.json('data/karma_matrix.json', function (data) {
             .attr("cy", function(d) { return d.y; });
     });
 });
-
-function mouseover (d) {
-    var mouse = d3.mouse(svg.node());
-    
-    svg.append('text')
-        .text(d.nick)
-        .attr({id: "nicktool",
-               transform: 'translate('+(mouse[0]+5)+', '+(mouse[1]+10)+')'});
-}
 
 function highlight (d, uniques, given, matrix, nick_id) {
     given.domain(d3.extent(matrix[nick_id(d.nick)]));
@@ -108,15 +100,7 @@ function highlight (d, uniques, given, matrix, nick_id) {
     });
 }
 
-function mousemove () {
-    var mouse = d3.mouse(svg.node());
-    d3.select('#nicktool')
-        .attr('transform', 'translate('+(mouse[0]+15)+', '+(mouse[1]+20)+')');
- }
-
-function mouseout (d, weight) {
-    d3.select('#nicktool').remove();
-
+function dehighlight (d, weight) {
     d3.selectAll('.node')
         .transition()
         .attr('r', function (d) { return weight(d.weight); });
