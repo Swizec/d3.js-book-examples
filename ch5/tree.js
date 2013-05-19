@@ -7,29 +7,14 @@ var width = 1024,
                height: height});
 
 d3.json('data/karma_matrix.json', function (data) {
+    
+    helpers.fixate_colors(data);
 
-    var tree = {nick: 'karma',
-                children: []};
-    var uniques = helpers.uniques(data, function (d) { return d.from; });
-
-    tree.children = uniques.map(
-        function (nick) {
-            var my_karma = data.filter(function (d) { return d.to == nick; }).length,
-                given_to = helpers.bin_per_nick(
-                    data.filter(function (d) { return d.from == nick; }),
-                    function (d) { return d.to; }
-                );
-
-            return {nick: nick,
-                    count: my_karma,
-                    children: given_to.map(function (d) {
-                        return {nick: d[0].to,
-                                count: d.length,
-                                children: []};
-                    })};
-    });
-
-    uniques.forEach(function (nick) { helpers.color(nick); });
+    var tree = helpers.make_tree(data,
+                                 function (d, nick) { return d.to == nick; },
+                                 function (d, nick) { return d.from == nick; },
+                                 function (d) { return d.to; },
+                                 function (d) { return d[0].to; });
 
     var layout = d3.layout.tree()
             .size([360, width/2 - 120]);
