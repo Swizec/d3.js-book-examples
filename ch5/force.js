@@ -48,7 +48,6 @@ d3.json('data/karma_matrix.json', function (data) {
             .data(links)
             .enter()
             .append("line")
-            .attr('class', function (d) { return 'nick_'+nick_id(d.source.nick); })
             .classed('link', true);
     
     var node = svg.selectAll("circle")
