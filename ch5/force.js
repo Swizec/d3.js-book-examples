@@ -9,14 +9,8 @@ var width = 1000,
 d3.json('data/karma_matrix.json', function (data) {
 
     var nick_id = helpers.nick_id(data, function (d) { return d.from; }),
-        uniques = nick_id.domain();
-
-    var matrix = d3.range(uniques.length).map(function () {
-        return d3.range(uniques.length).map(function () { return 0; });
-    });
-    data.forEach(function (d) {
-        matrix[nick_id(d.from)][nick_id(d.to)] += 1;
-    });
+        uniques = nick_id.domain(),
+        matrix = helpers.connection_matrix(data);
 
     var nodes = uniques.map(function (nick) {
         return {nick: nick};

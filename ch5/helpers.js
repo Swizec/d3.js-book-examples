@@ -138,5 +138,20 @@ window.helpers = {
 
     fixate_colors: function (data) {
         helpers.color.domain(helpers.uniques(data, function (d) { return d.from; }));
+    },
+
+    connection_matrix: function (data) {
+        var nick_id = helpers.nick_id(data, function (d) { return d.from; }),
+            uniques = nick_id.domain();
+        
+        var matrix = d3.range(uniques.length).map(function () {
+            return d3.range(uniques.length).map(function () { return 0; });
+        });
+        
+        data.forEach(function (d) {
+            matrix[nick_id(d.from)][nick_id(d.to)] += 1;
+        });
+
+        return matrix;
     }
 };
