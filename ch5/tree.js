@@ -16,14 +16,14 @@ d3.json('data/karma_matrix.json', function (data) {
                                  function (d) { return d.to; },
                                  function (d) { return d[0].to; });
 
+    var diagonal = d3.svg.diagonal.radial()
+            .projection(function(d) { return [d.y, d.x / 180 * Math.PI]; });
+
     var layout = d3.layout.tree()
             .size([360, width/2 - 120]);
 
     var nodes = layout.nodes(tree),
         links = layout.links(nodes);
-
-    var diagonal = d3.svg.diagonal.radial()
-            .projection(function(d) { return [d.y, d.x / 180 * Math.PI]; });
 
     var chart = svg.append('g')
             .attr('transform', 'translate('+width/2+','+height/2+')');
