@@ -72,7 +72,7 @@ draw_one(line5)
     .style('stroke', colors(4));
 
 
-var threshold = d3.scale.quantize().domain([-1, 0, 1]).range([-50, 0, 50]),
+var threshold = d3.scale.threshold().domain([-1, 0, 1]).range([-50, 0, 50, 100]),
     line6 = line1.x(x).y(function (d) { return threshold(weierstrass(d)); });
 
 draw_one(line6)
