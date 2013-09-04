@@ -70,10 +70,10 @@ svg.selectAll('ellipse, circle')
     .attr('transform', 'translate(150, 0) rotate(-45, 350, 250) scale(1.2)');
 
 svg.selectAll('ellipse, circle')
-    .attr('transform', 'translate(150, 0) scale(1.2) translate(-70, 0) rotate(-45, 291, 208)');
+    .attr('transform', 'translate(150, 0) scale(1.2) translate(-70, 0) rotate(-45, '+(350/1.2)+', '+(250/1.2)+')');
 
 svg.selectAll('ellipse, circle')
-    .attr('transform', 'translate(150, 0) scale(1.2) translate(-70, 0) rotate(-45, 291, 208) skewY(20)');
+    .attr('transform', 'translate(150, 0) scale(1.2) translate(-70, 0) rotate(-45, '+(350/1.2)+', '+(250/1.2)+') skewY(20)');
 
 svg.append('path')
     .attr({d: 'M 100 100 L 300 100 L 200 300 z', 
