@@ -57,7 +57,7 @@ d3.text('primes-to-100k.txt', function (data) {
 
     var primes = data.split('\n').slice(0, 5000).map(Number),
         sequence = spiral(d3.max(primes)).filter(function (d) {
-            return primes.indexOf(d['n']) > -1;
+            return _.indexOf(primes, d['n'], true) > -1;
         });
 
     var l = 2;
