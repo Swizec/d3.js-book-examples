@@ -24,7 +24,7 @@ var spiral = function (n) {
     d3.range(1, n).forEach(function (i) {
         spiral.push({x: x, y: y, n: i});
 
-        add = d3.values(directions)[direction];
+        add = directions[['up', 'left', 'down', 'right'][direction]];
         x += add[0], y += add[1];
 
         if (x < min[0]) {
