@@ -49,8 +49,9 @@ var spiral = function (n) {
 };
 
 var dot = d3.svg.symbol().type('circle').size(3),
-    x = function (x, d) { return 400+d*x; },
-    y = function (y, d) { return 400+d*y; };
+    center = 400,
+    x = function (x, a) { return center+a*x; },
+    y = function (y, a) { return center+a*y; };
 
 d3.text('primes-to-100k.txt', function (data) {
 
