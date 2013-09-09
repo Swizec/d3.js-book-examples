@@ -50,8 +50,8 @@ var spiral = function (n) {
 
 var dot = d3.svg.symbol().type('circle').size(3),
     center = 400,
-    x = function (x, a) { return center+a*x; },
-    y = function (y, a) { return center+a*y; };
+    x = function (x, l) { return center+l*x; },
+    y = function (y, l) { return center+l*y; };
 
 d3.text('primes-to-100k.txt', function (data) {
 
@@ -60,13 +60,13 @@ d3.text('primes-to-100k.txt', function (data) {
             return primes.indexOf(d['n']) > -1;
         });
 
-    var a = 2;
+    var l = 2;
 
     svg.selectAll('path')
         .data(sequence)
         .enter()
         .append('path')
-        .attr('transform', function (d) { return 'translate('+x(d['x'], a)+', '+y(d['y'], a)+')'; })
+        .attr('transform', function (d) { return 'translate('+x(d['x'], l)+', '+y(d['y'], l)+')'; })
         .attr('d', dot);
 
     var scale = 8;
@@ -95,10 +95,10 @@ d3.text('primes-to-100k.txt', function (data) {
             }
             
             svg.append('rect')
-                .attr({x: x(_x, a*scale),
-                       y: y(_y, a*scale),
-                       width: a*scale,
-                       height: a*scale})
+                .attr({x: x(_x, l*scale),
+                       y: y(_y, l*scale),
+                       width: l*scale,
+                       height: l*scale})
                 .style({fill: color,
                        'fill-opacity': 0.9});
         });
