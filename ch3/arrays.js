@@ -81,7 +81,8 @@ d3.text('primes-to-100k.txt', function (data) {
         }));
 
     var median = d3.median(values),
-        shades = (d3.extent(values)[1]-d3.extent(values)[0])/2;
+        extent = d3.extent(values),
+        shades = (extent[1]-extent[0])/2;
 
     d3.keys(regions).forEach(function (_x) {
         d3.keys(regions[_x]).forEach(function (_y) {
@@ -93,7 +94,7 @@ d3.text('primes-to-100k.txt', function (data) {
             }else{
                 color = d3.rgb('#e23c22').darker(regions[_x][_y]/shades);
             }
-            
+
             svg.append('rect')
                 .attr({x: x(_x, l*scale),
                        y: y(_y, l*scale),
@@ -104,4 +105,3 @@ d3.text('primes-to-100k.txt', function (data) {
         });
     });
 });
-
