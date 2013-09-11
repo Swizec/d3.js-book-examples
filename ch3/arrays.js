@@ -87,12 +87,14 @@ d3.text('primes-to-100k.txt', function (data) {
     d3.keys(regions).forEach(function (_x) {
         d3.keys(regions[_x]).forEach(function (_y) {
 
-            var color;
+            var color,
+                red = '#e23c22',
+                green = '#496c36';
 
             if (regions[_x][_y] > median) {
-                color = d3.rgb('#496c36').brighter(regions[_x][_y]/shades);
+                color = d3.rgb(green).brighter(regions[_x][_y]/shades);
             }else{
-                color = d3.rgb('#e23c22').darker(regions[_x][_y]/shades);
+                color = d3.rgb(red).darker(regions[_x][_y]/shades);
             }
 
             svg.append('rect')
