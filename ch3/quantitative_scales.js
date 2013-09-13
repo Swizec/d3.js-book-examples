@@ -65,10 +65,11 @@ draw_one(line4)
 
 
 var quantize = d3.scale.quantize().domain(extent).range(d3.range(-1, 2, 0.5).map(function (d) { return d*100; })),
-    line5 = line1.x(x).y(function (d) { return quantize(weierstrass(d)); });
+    line5 = line1.x(x).y(function (d) { return quantize(weierstrass(d)); }),
+    offset = 100;
 
 draw_one(line5)
-    .attr('transform', 'translate(0, '+(height/2+100)+')')
+    .attr('transform', 'translate(0, '+(height/2+offset)+')')
     .style('stroke', colors(4));
 
 
@@ -76,5 +77,5 @@ var threshold = d3.scale.threshold().domain([-1, 0, 1]).range([-50, 0, 50, 100])
     line6 = line1.x(x).y(function (d) { return threshold(weierstrass(d)); });
 
 draw_one(line6)
-    .attr('transform', 'translate(0, '+(height/2+200)+')')
+    .attr('transform', 'translate(0, '+(height/2+offset*2)+')')
     .style('stroke', colors(5));
