@@ -9,17 +9,7 @@ var width = 1024,
 d3.json('data/karma_matrix.json', function (data) {
     
     var uniques = helpers.uniques(data, function (d) { return d.from; }),
-        nick_id = d3.scale.ordinal()
-            .domain(uniques)
-            .range(d3.range(uniques.length));
-
-    var matrix = d3.range(uniques.length).map(function () {
-        return d3.range(uniques.length).map(function () { return 0; });
-    });
-
-    data.forEach(function (d) {
-        matrix[nick_id(d.from)][nick_id(d.to)] += 1;
-    });
+        matrix = helpers.connection_matrix(data);
 
     var innerRadius = Math.min(width, height)*0.3,
         outerRadius = innerRadius*1.1;
