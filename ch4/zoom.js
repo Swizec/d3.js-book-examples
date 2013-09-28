@@ -83,7 +83,7 @@ function draw_airlines(err, _airports, _routes) {
     var route_N = d3.values(routes).map(function (routes) {
         return routes.length;
     }),
-        R_scale = d3.scale.linear().domain([d3.min(route_N), d3.max(route_N)]).range([2, 15]);
+        R = d3.scale.linear().domain([d3.min(route_N), d3.max(route_N)]).range([2, 15]);
 
    svg.append('g')
         .selectAll('circle')
@@ -97,7 +97,7 @@ function draw_airlines(err, _airports, _routes) {
         .attr('r', function (id) { return routes[id] ? R(routes[id].length) : 1; })
         .classed('airport', true);
 
-    zoomable(airports, R_scale, routes);
+    zoomable(airports, R, routes);
 }
 
 function zoomable(airports, R_scale, routes) {
