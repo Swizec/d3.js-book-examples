@@ -7,7 +7,7 @@ var width = 1024,
                height: height});
 
 var radiate = function (pos) {
-    d3.range(3).map(function (d) {
+    d3.range(3).forEach(function (d) {
         svg.append('circle')
             .attr({cx: pos[0],
                    cy: pos[1],
