@@ -44,10 +44,11 @@ d3.json('data/karma_matrix.json', function (data) {
             })])
             .range([height-margins.top, 0]);
 
-    var area = d3.svg.area()
+    var offset,
+        area = d3.svg.area()
             .x(function(d) { return x(d.x); })
-            .y0(function(d) { return y(d.y0)+100; })
-            .y1(function(d) { return y(d.y0 + d.y)+100; });
+            .y0(function(d) { return y(d.y0)+offset; })
+            .y1(function(d) { return y(d.y0 + d.y)+offset; });
 
     svg.selectAll('path')
         .data(layers)
