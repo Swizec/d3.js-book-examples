@@ -44,7 +44,7 @@ d3.json('data/karma_matrix.json', function (data) {
             })])
             .range([height-margins.top, 0]);
 
-    var offset,
+    var offset = 100,
         area = d3.svg.area()
             .x(function(d) { return x(d.x); })
             .y0(function(d) { return y(d.y0)+offset; })

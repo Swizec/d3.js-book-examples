@@ -28,10 +28,13 @@ d3.json('data/karma_matrix.json', function (data) {
     var group = diagram.selectAll('.group')
             .data(chord.groups)
             .enter()
-            .append('g');
+            .append('g'),
+        arc = d3.svg.arc()
+            .innerRadius(innerRadius)
+            .outerRadius(outerRadius);
 
     group.append('path')
-        .attr('d', d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius))
+        .attr('d', arc)
         .attr('fill', function (d) { return helpers.color(d.index); });
 
     group.call(helpers.arc_labels(function (d) { return uniques[d.index]; },
