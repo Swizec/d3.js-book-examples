@@ -54,10 +54,10 @@ d3.json('data/karma_matrix.json', function (data) {
             .data(nodes)
             .enter()
             .append("circle")
-            .attr('class', function (d) { return 'nick_'+nick_id(d.nick); })
-            .classed('node', true)
             .attr({r: function (d) { return weight(d.weight); },
-                   fill: function (d) { return helpers.color(d.index); }})
+                   fill: function (d) { return helpers.color(d.index); },
+                   class: function (d) { return 'nick_'+nick_id(d.nick); }})
+            .classed('node', true)
             .on('mouseover', function (d) {
                 highlight(d, uniques, given, matrix, nick_id);
             })
